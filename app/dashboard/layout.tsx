@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
-import { MobileNav } from "../components/ui/mobile-nav"
-import { UserNav } from "../components/ui/user-nav"
-import { DashboardNav } from "../components/ui/dashboard-nav"
+import { MobileNav } from "../components/ui-new/mobile-nav"
+import { UserNav } from "../components/ui-new/user-nav"
+import { DashboardNav } from "../components/ui-new/dashboard-nav"
 
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
