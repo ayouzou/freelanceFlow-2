@@ -60,3 +60,5 @@ export async function verifyAuth(request: NextRequest) {
         return null
     }
 }
+
+export {};
