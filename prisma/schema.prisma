@@ -1,0 +1,155 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id               String              @id @default(cuid())
+  name             String
+  email            String              @unique
+  password         String
+  role             String?             @default("user")
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+  resetToken       String? // Nullable field for reset token
+  resetTokenExpiry DateTime? // Nullable field for token expiry
+  projects         Project[]
+  interactions     ClientInteraction[]
+  notes            ClientNote[]
+  timeEntries   TimeEntry[] 
+}
+
+model Client {
+  id           String              @id @default(cuid())
+  name         String
+  contactName  String
+  email        String
+  phone        String?
+  address      String?
+  website      String?
+  status       String              @default("active")
+  description  String?
+  avatar       String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  projects     Project[]
+  invoices     Invoice[]
+  interactions ClientInteraction[]
+  notes        ClientNote[]
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  deadline    DateTime?
+  status      String    @default("not_started")
+  progress    Int       @default(0)
+  clientId    String
+  client      Client    @relation(fields: [clientId], references: [id])
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  tasks       Task[]
+  invoices    Invoice[]
+  timeEntries   TimeEntry[] 
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  status      String    @default("todo")
+  priority    String    @default("medium")
+  dueDate     DateTime?
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id])
+  assigneeId  String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  timeEntries   TimeEntry[]
+}
+
+model Invoice {
+  id        String        @id @default(cuid())
+  number    String        @unique
+  status    String        @default("draft")
+  date      DateTime      @default(now())
+  dueDate   DateTime
+  clientId  String
+  client    Client        @relation(fields: [clientId], references: [id])
+  projectId String?
+  project   Project?      @relation(fields: [projectId], references: [id])
+  subtotal  Float
+  tax       Float         @default(0)
+  total     Float
+  notes     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  items     InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  description String
+  quantity    Int
+  unitPrice   Float
+  total       Float
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model ClientInteraction {
+  id        String   @id @default(cuid())
+  type      String // email, call, meeting, note
+  summary   String
+  notes     String?
+  date      DateTime @default(now())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientNote {
+  id        String   @id @default(cuid())
+  content   String
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model TimeEntry {
+  id            String    @id @default(cuid())
+  description   String
+  startTime     DateTime
+  endTime       DateTime?
+  duration      Int       // Duration in seconds
+  billable      Boolean   @default(true)
+  invoiced      Boolean   @default(false)
+  invoiceId     String?
+  projectId     String?
+  project       Project?  @relation(fields: [projectId], references: [id])
+  taskId        String?
+  task          Task?     @relation(fields: [taskId], references: [id])
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
