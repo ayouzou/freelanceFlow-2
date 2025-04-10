@@ -3,13 +3,14 @@ import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+
 import { AlertCircle, Loader2 } from "lucide-react"
 import { useLogin } from "@/lib/react-query/auth-hooks"
+import { Alert, AlertDescription } from "components/ui/alert"
+import { Label } from "components/ui/label"
+import { Input } from "components/ui/input"
+import { Checkbox } from "components/ui/checkbox"
+import { Button } from "components/ui/button"
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),

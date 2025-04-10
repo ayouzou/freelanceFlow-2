@@ -1,8 +1,9 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+
 import { LogOut, Loader2 } from "lucide-react"
 import { useLogout } from "@/lib/react-query/auth-hooks"
+import { Button } from "components/ui/button"
 
 interface LogoutButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
