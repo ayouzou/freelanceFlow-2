@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server"
-import { getAuthUser } from "@/lib/auth"
+import { getAuthUser } from "../../../../lib/auth"
 
 export async function GET() {
+    console.log("Resolved getAuthUser:", getAuthUser);
   try {
     const user = await getAuthUser()
 
