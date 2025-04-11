@@ -10,7 +10,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
-        const user =  prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 name,
                 email,
